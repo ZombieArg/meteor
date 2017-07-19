@@ -11,7 +11,14 @@ Posts.allow({
     remove: function (userId, post) {
         return ownsDocument(userId, post);
     }
-})
+});
+
+Posts.deny({
+    update: function (userId, post, fieldNames) {
+        //May only edit following two fields:
+        return (_.without(fieldNames, 'url', 'title').length > 0);
+    }
+});
 
 Meteor.methods({
    postInsert: function (postAttributes) {
