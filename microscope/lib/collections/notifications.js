@@ -19,7 +19,7 @@ createCommentNotification = function (comment) {
         Notifications.insert({
             userId: post.userId,
             postId: post._id,
-            commentId: comment.id,
+            commentId: comment._id,
             commenterName: comment.author,
             read: false
         });
