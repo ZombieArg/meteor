@@ -10,8 +10,6 @@ Router.configure({
     }
 });
 
-Router.route('/', {name:'postsList'});
-
 Router.route('/posts/:_id', {
     name:'postPage',
     waitOn: function(){
@@ -26,21 +24,27 @@ Router.route('/posts/:_id/edit',{
 
 });
 
-
 Router.route('/submit', {name: 'postSubmit'});
 
-Router.route('/:postsLimit?', {
-   name:'postsList',
-    waitOn: function () {
-        var limit = parseInt(this.params.postsLimit) || 5;
-        return Meteor.subscribe('posts', {sort: {submitted: -1}, limit: limit});
-    },
+PostsListController = RouteController.extend({
+   template: 'postsList',
+   increment: 5,
+   postsLimit: function () {
+       return parseInt(this.params.postsLimit) || this.increment;
+   },
+   findOptions: function () {
+       return {sort: {submitted: -1}, limit: this.postsLimit()};
+   },
+   waitOn: function () {
+       return Meteor.subscribe('posts', this.findOptions());
+   },
     data: function () {
-        var limit = parseInt(this.params.postsLimit) || 5;
-        return {
-            posts: Posts.find({}, {sort: {submitted: -1}, limit: limit})
-        }
+        return {posts: Posts.find({}, this.findOptions())};
     }
+});
+
+Router.route('/:postsLimit?', {
+   name:'postsList'
 });
 
 var requireLogin = function () {
