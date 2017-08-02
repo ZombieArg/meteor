@@ -71,7 +71,7 @@ Meteor.methods({
        if(!post)
            throw new Meteor.Error('invalid', 'Post not found');
 
-       if(_.includes(post.upvoters, this.userId));
+       if(_.include(post.upvoters, this.userId));
            throw new Meteor.Error('invalid', 'Already upvoted this post');
 
        Posts.update(post._id, {
